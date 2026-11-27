@@ -907,3 +907,36 @@ body {
   justify-content: center;
   gap: 8px;
 }
+
+
+/* Bloques modulares de portada */
+.wv-portada-bloque {
+  margin-bottom: 24px;
+}
+
+.wv-portada-imagen img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+.wv-portada-titulo {
+  margin: 0 0 8px;
+  font-size: 1.7rem;
+  line-height: 1.15;
+}
+
+.wv-portada-subtitulo {
+  margin: 0;
+  color: var(--wv-texto-suave);
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+.wv-producto-unico-card {
+  max-width: 340px;
+  display: inline-block;
+  text-align: left;
+}
