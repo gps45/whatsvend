@@ -1,0 +1,4 @@
+# Redirecciones amigables para WhatsVend en Cloudflare Pages
+# Permite visitar https://whatvend.pages.dev/vend o cualquier /slug limpio
+# y también soporta la ruta raíz con /?tienda=slug
+/*    /index.html   200

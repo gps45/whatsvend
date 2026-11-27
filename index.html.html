@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>WhatsVend — Catálogo y Pedidos por WhatsApp</title>
+
+  <!-- Tipografías comunes configurables desde Google Sheets -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@500;600;700;800&family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Contenedor principal donde `vistas.js` y `app.js` montan la aplicación -->
+  <div id="app" class="wv-app">
+    <div class="wv-cargando">Cargando catálogo...</div>
+  </div>
+
+  <!-- Ventana modal reutilizable para producto, "Ver más" por categoría, carrito y WhatsVend -->
+  <div id="wv-modal-backdrop" class="wv-modal-backdrop" aria-hidden="true">
+    <div id="wv-modal-dialog" class="wv-modal-dialog" role="dialog" aria-modal="true">
+      <!-- Contenido inyectado dinámicamente -->
+    </div>
+  </div>
+
+  <!-- Scripts modulares en orden de dependencia -->
+  <script src="tiendas.js"></script>
+  <script src="sheets.js"></script>
+  <script src="carrito.js"></script>
+  <script src="vistas.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
