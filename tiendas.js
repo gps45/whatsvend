@@ -34,10 +34,10 @@ const WHATSAPP_CREADOR_CONFIG = {
  *   de exportación (por ejemplo vía Apps Script doGet o publicación CSV).
  */
 const TIENDAS_WHATSAPPVEND = {
-  vend: {
-    nombreReferencia: 'Burger & Roll Studio',
+  foodwars: {
+    nombreReferencia: 'Food Wars',
     activo: true,
-    sheetId: 'REEMPLAZA_AQUI_CON_EL_ID_DE_TU_GOOGLE_SHEET',
+    sheetId: '1QiNz5KlnUKaZaalRqt3TMs54pAkwtSSUMkQqvjnimI0',
     // Si usas un Apps Script publicado como Web App (doGet) que devuelve JSON
     // con las pestañas { Config, Portada, Secciones, Productos, Extras, ModulosExtra },
     // pon aquí la URL `/exec`. Si queda vacío, se intentará leer CSV público.
@@ -64,5 +64,5 @@ function resolverSlugTiendaActual() {
     }
   }
 
-  return 'vend';
+  return 'foodwars';
 }
