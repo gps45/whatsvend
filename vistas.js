@@ -45,8 +45,10 @@ function estaAbiertoSegunHorario(config) {
 }
 
 function renderizarPortada(datos, carrito) {
+ 
   const { config, portada, productos } = datos;
   const moneda = (config.moneda || '$').trim();
+
   const bloquesActivos = [...portada]
     .filter((b) => esSi(b.activo, true))
     .sort((a, b) => aNumero(a.orden, 0) - aNumero(b.orden, 0));
@@ -54,26 +56,124 @@ function renderizarPortada(datos, carrito) {
   let html = `<div class="wv-portada">`;
 
   bloquesActivos.forEach((bloque) => {
-    if (bloque.tipo === 'hero') {
-      const textoBtn =
-        bloque.boton_texto || config.texto_boton_portada || 'Ver menú';
+    const tipo = (bloque.tipo || '').trim().toLowerCase();
+    const alineacion = (bloque.alineacion || 'centro').toLowerCase();
+    const alignCss =
+      alineacion === 'izquierda'
+        ? 'left'
+        : alineacion === 'derecha'
+        ? 'right'
+        : 'center';
+
+    if (tipo === 'imagen') {
+      if (!bloque.imagen) return;
       html += `
-        <section class="wv-portada-hero">
+        <section class="wv-portada-bloque wv-portada-imagen" style="text-align:${alignCss};">
+          <img
+            src="${escaparHtml(bloque.imagen)}"
+            alt="${escaparHtml(bloque.titulo || 'Imagen de portada')}"
+          />
+        </section>
+      `;
+      return;
+    }
+
+    if (tipo === 'texto') {
+      html += `
+        <section class="wv-portada-bloque wv-portada-texto" style="text-align:${alignCss};">
           ${
-            bloque.imagen
-              ? `<img src="${escaparHtml(bloque.imagen)}" alt="${escaparHtml(bloque.titulo)}" />`
+            bloque.titulo
+              ? `<h2 class="wv-portada-titulo">${escaparHtml(bloque.titulo)}</h2>`
               : ''
           }
-          <div class="wv-portada-hero-contenido">
-            <h1>${escaparHtml(bloque.titulo || config.nombre_negocio)}</h1>
-            ${bloque.subtitulo ? `<p>${escaparHtml(bloque.subtitulo)}</p>` : ''}
+          ${
+            bloque.subtitulo
+              ? `<p class="wv-portada-subtitulo">${escaparHtml(bloque.subtitulo)}</p>`
+              : ''
+          }
+        </section>
+      `;
+      return;
+    }
+
+    if (tipo === 'producto_unico') {
+      const idBuscado = (
+        bloque.producto_id ||
+        bloque.ids_productos_destacados ||
+        ''
+      )
+        .split(',')[0]
+        .trim();
+
+      const prod =
+        productos.find((p) => p.id === idBuscado && esSi(p.disponible, true)) ||
+        productos.find((p) => esSi(p.disponible, true));
+
+      if (!prod) return;
+
+      html += `
+        <section class="wv-portada-bloque wv-portada-producto-unico" style="text-align:${alignCss};">
+          ${
+            bloque.titulo
+              ? `<h3 class="wv-portada-subtitulo-bloque">${escaparHtml(bloque.titulo)}</h3>`
+              : ''
+          }
+          <article class="wv-destacado-card wv-producto-unico-card" data-abrir-producto="${escaparHtml(prod.id)}">
+            ${
+              prod.imagen
+                ? `<img src="${escaparHtml(prod.imagen)}" alt="${escaparHtml(prod.nombre)}" />`
+                : ''
+            }
+            <div class="wv-destacado-card-body">
+              <div style="font-weight:700;">${escaparHtml(prod.nombre)}</div>
+              ${
+                prod.descripcion
+                  ? `<p class="wv-prod-desc" style="margin:4px 0;">${escaparHtml(prod.descripcion)}</p>`
+                  : ''
+              }
+              <div class="wv-destacado-precio">${moneda}${aNumero(prod.precio, 0).toFixed(2)}</div>
+            </div>
+          </article>
+        </section>
+      `;
+      return;
+    }
+
+    if (tipo === 'boton') {
+      const textoBtn =
+        bloque.boton_texto ||
+        bloque.titulo ||
+        config.texto_boton_portada ||
+        'Ver menú';
+      const destino = (bloque.enlace_url || '').trim();
+
+      if (destino && !destino.startsWith('#')) {
+        html += `
+          <section class="wv-portada-bloque wv-portada-boton" style="text-align:${alignCss};">
+            <a
+              href="${escaparHtml(destino)}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="wv-btn-primario"
+              style="text-decoration:none;"
+            >
+              ${escaparHtml(textoBtn)}
+            </a>
+          </section>
+        `;
+      } else {
+        html += `
+          <section class="wv-portada-bloque wv-portada-boton" style="text-align:${alignCss};">
             <button type="button" class="wv-btn-primario" data-accion="ir-catalogo">
               ${escaparHtml(textoBtn)}
             </button>
-          </div>
-        </section>
-      `;
-    } else if (bloque.tipo === 'destacados') {
+          </section>
+        `;
+      }
+      return;
+    }
+
+    if (tipo === 'destacados') {
       const ids = (bloque.ids_productos_destacados || '')
         .split(',')
         .map((s) => s.trim())
@@ -83,15 +183,9 @@ function renderizarPortada(datos, carrito) {
           ? productos.filter((p) => ids.includes(p.id) && esSi(p.disponible, true))
           : productos.filter((p) => esSi(p.disponible, true)).slice(0, 4);
 
-      const mostrarBtn = esSi(config.mostrar_boton_destacados, true);
-      const textoBtnDest =
-        bloque.boton_texto ||
-        config.texto_boton_destacados ||
-        'Ver todo el menú';
-
       html += `
-        <section style="margin-bottom: 32px;">
-          <h2 style="margin:0 0 6px;">${escaparHtml(bloque.titulo || 'Destacados')}</h2>
+        <section class="wv-portada-bloque" style="text-align:${alignCss};">
+          ${bloque.titulo ? `<h2 style="margin:0 0 6px;">${escaparHtml(bloque.titulo)}</h2>` : ''}
           ${
             bloque.subtitulo
               ? `<p style="margin:0 0 12px; color:var(--wv-texto-suave);">${escaparHtml(bloque.subtitulo)}</p>`
@@ -116,15 +210,6 @@ function renderizarPortada(datos, carrito) {
               )
               .join('')}
           </div>
-          ${
-            mostrarBtn
-              ? `<div style="margin-top:18px; text-align:center;">
-                   <button type="button" class="wv-btn-primario" data-accion="ir-catalogo">
-                     ${escaparHtml(textoBtnDest)}
-                   </button>
-                 </div>`
-              : ''
-          }
         </section>
       `;
     }
