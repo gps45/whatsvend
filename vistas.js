@@ -64,6 +64,21 @@ function renderizarPortada(datos, carrito) {
         : alineacion === 'derecha'
         ? 'right'
         : 'center';
+    
+    if (tipo === 'logo') {
+      const urlLogo = (bloque.imagen || config.logo_url || '').trim();
+      if (!urlLogo) return;
+      html += `
+        <section class="wv-portada-bloque wv-portada-logo" style="text-align:${alignCss};">
+          <img
+            src="${escaparHtml(urlLogo)}"
+            alt="${escaparHtml(bloque.titulo || config.nombre_negocio || 'Logo')}"
+          />
+        </section>
+      `;
+      return;
+    }
+    
 
     if (tipo === 'imagen') {
       if (!bloque.imagen) return;
