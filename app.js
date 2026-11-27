@@ -34,7 +34,13 @@
     document.title = `${datos.config.nombre_negocio} — WhatsVend`;
   }
 
-  let vistaActual = 'catalogo'; // 'portada' | 'catalogo'
+  const tienePortadaActiva =
+  esSi(datos.config.portada_activa, true) &&
+  Array.isArray(datos.portada) &&
+  datos.portada.some((b) => esSi(b.activo, true));
+
+let vistaActual = tienePortadaActiva ? 'portada' : 'catalogo';
+  
   let filtroBusqueda = '';
   let categoriaActiva = '';
 
