@@ -940,3 +940,12 @@ body {
   display: inline-block;
   text-align: left;
 }
+
+.wv-portada-logo img {
+  max-height: 96px;
+  max-width: 240px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: inline-block;
+}
