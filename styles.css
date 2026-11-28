@@ -766,13 +766,14 @@ body {
 }
 
 @media (max-width: 767px) {
-  .wv-modal-backdrop.is-ver-mas-backdrop {
+  .wv-modal-backdrop {
     padding: 0;
   }
-  .wv-modal-dialog.is-ver-mas {
+  .wv-modal-dialog {
     width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
     border-radius: 0;
     transition: transform 0.2s ease;
   }
