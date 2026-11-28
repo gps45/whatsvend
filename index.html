@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsVend — Catálogo Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <div class="wv-cargando">Cargando catálogo...</div>
+  </div>
+
+  <script src="./sheets.js"></script>
+  <script src="./carrito.js"></script>
+  <script src="./vistas.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      iniciarAplicacion({
+        sheetId: '1QiNz5KlnUKaZaalRqt3TMs54pAkwtSSUMkQqvjnimI0',
+        appsScriptUrl: ''
+      });
+    });
+  </script>
+</body>
+</html>
