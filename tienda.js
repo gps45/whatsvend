@@ -8,7 +8,7 @@ const TIENDAS_WHATSVEND = {
   foodwars: {
     slug: 'foodwars',
     nombre: 'Food Wars',
-    sheetId: '1QiNz5KlnUKaZaalRqt3TMs54pAkwtSSUMkQqvjnimI0',
+    sheetId: '1C8rJRFKb2nCoq1RhGHnwwPGKot2tBvNwvkeCEXdmiJ0',
     appsScriptUrl: ''
   }
 };
