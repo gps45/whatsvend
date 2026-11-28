@@ -16,7 +16,17 @@
 (async function iniciarWhatsVend() {
   const slug = resolverSlugTiendaActual();
   const tiendaInfo = TIENDAS_WHATSAPPVEND[slug] || null;
-  const datos = await cargarDatosTienda(tiendaInfo);
+  const datos = await cargarDatosTienda(tiendaInfo, slug);
+
+  const appEl = document.getElementById('app');
+  const modalBackdrop = document.getElementById('wv-modal-backdrop');
+  const modalDialog = document.getElementById('wv-modal-dialog');
+
+  if (datos && datos.estadoError === 404) {
+    document.title = '404 — Tienda no disponible | WhatsVend';
+    appEl.innerHTML = renderizarError404(datos, slug);
+    return;
+  }
   const carrito = new GestorCarrito(slug);
 
   const appEl = document.getElementById('app');
