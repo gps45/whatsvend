@@ -98,12 +98,22 @@ async function leerPestanaCsv(sheetId, nombrePestana) {
 
 function convertirFilasConfigAObjeto(filasConfig) {
   const cfg = {};
+  if (!Array.isArray(filasConfig)) return cfg;
+
   filasConfig.forEach((fila) => {
-    const clave = (fila.clave || '').trim();
-    if (clave) {
-      cfg[clave] = fila.valor !== undefined ? fila.valor : '';
-    }
+    if (!fila || typeof fila !== 'object') return;
+    const valores = Object.values(fila);
+    const claveRaw =
+      fila.clave !== undefined && fila.clave !== '' ? fila.clave : valores[0];
+    const valorRaw =
+      fila.valor !== undefined && fila.valor !== '' ? fila.valor : valores[1];
+
+    const clave = String(claveRaw || '').trim();
+    if (!clave || clave.toLowerCase() === 'clave') return;
+
+    cfg[clave] = valorRaw !== undefined ? String(valorRaw).trim() : '';
   });
+
   return cfg;
 }
 
