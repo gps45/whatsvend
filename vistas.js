@@ -706,3 +706,44 @@ function renderizarCatalogo(datos, carrito, filtroBusqueda = '', categoriaActiva
     renderizarFooterWhatsVend(config)
   );
 }
+
+function renderizarError404(datosError, slug = '') {
+  const motivo = datosError?.motivo || 'sheet_no_disponible';
+  const refNombre = datosError?.nombreReferencia
+    ? ` (${escaparHtml(datosError.nombreReferencia)})`
+    : '';
+
+  let titulo = 'Tienda no encontrada';
+  let descripcion =
+    'No encontramos la tienda solicitada o su base de datos en Google Sheets no está disponible.';
+
+  if (motivo === 'tienda_inactiva') {
+    titulo = `Tienda no disponible${refNombre}`;
+    descripcion =
+      'Esta tienda se encuentra temporalmente desactivada (activo: false).';
+  } else if (motivo === 'sheet_no_disponible' || motivo === 'sheet_vacio') {
+    titulo = `Error al cargar la base de datos${refNombre}`;
+    descripcion =
+      'El ID del Google Sheet es inválido, no está compartido públicamente o no contiene datos configurados.';
+  }
+
+  return `
+    <main style="max-width:560px; margin:64px auto; padding:32px 20px; text-align:center;">
+      <div style="font-size:3rem; font-weight:800; line-height:1; color:var(--wv-primario);">404</div>
+      <h1 style="margin:12px 0 8px; font-size:1.5rem;">${escaparHtml(titulo)}</h1>
+      <p style="margin:0 0 16px; color:var(--wv-texto-suave); font-size:0.95rem; line-height:1.5;">
+        ${escaparHtml(descripcion)}
+      </p>
+      ${
+        slug
+          ? `<div style="font-size:0.82rem; color:var(--wv-texto-suave); background:var(--wv-superficie); border:1px solid var(--wv-borde); border-radius:10px; padding:8px 12px; margin-bottom:20px;">
+               Tienda consultada: <strong>${escaparHtml(slug)}</strong>
+             </div>`
+          : ''
+      }
+      <a href="/" class="wv-btn-primario" style="text-decoration:none;">
+        Ir al inicio
+      </a>
+    </main>
+  `;
+}
