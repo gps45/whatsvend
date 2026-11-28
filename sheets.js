@@ -346,67 +346,101 @@ function obtenerDatosDemo() {
   return { config, portada, secciones, productos, extras, modulosExtra };
 }
 
-async function cargarDatosTienda(tiendaInfo) {
+async function cargarDatosTienda(tiendaInfo, slug = '') {
   if (!tiendaInfo) {
+    if (!slug) {
+      return obtenerDatosDemo();
+    }
+    return {
+      estadoError: 404,
+      motivo: 'tienda_no_existe'
+    };
+  }
+
+  if (tiendaInfo.activo === false) {
+    return {
+      estadoError: 404,
+      motivo: 'tienda_inactiva',
+      nombreReferencia: tiendaInfo.nombreReferencia || slug
+    };
+  }
+
+  const tieneAppsScript =
+    tiendaInfo.appsScriptUrl && tiendaInfo.appsScriptUrl.startsWith('http');
+  const tieneSheetId =
+    tiendaInfo.sheetId &&
+    String(tiendaInfo.sheetId).trim() !== '' &&
+    !String(tiendaInfo.sheetId).trim().startsWith('REEMPLAZA_AQUI');
+
+  if (!tieneAppsScript && !tieneSheetId) {
     return obtenerDatosDemo();
   }
 
-  // Opción A: Web App de Apps Script que devuelve JSON por pestaña
-  if (tiendaInfo.appsScriptUrl && tiendaInfo.appsScriptUrl.startsWith('http')) {
+  if (tieneAppsScript) {
     try {
       const resp = await fetch(tiendaInfo.appsScriptUrl);
-      if (resp.ok) {
-        const data = await resp.json();
-        return {
-          config: Array.isArray(data.Config)
-            ? convertirFilasConfigAObjeto(data.Config)
-            : data.Config || {},
-          portada: data.Portada || [],
-          secciones: data.Secciones || [],
-          productos: data.Productos || [],
-          extras: data.Extras || [],
-          modulosExtra: data.ModulosExtra || []
-        };
+      if (!resp.ok) {
+        return { estadoError: 404, motivo: 'sheet_no_disponible' };
       }
-    } catch (err) {
-      console.warn('Fallo al leer Apps Script, intentando CSV:', err);
-    }
-  }
+      const data = await resp.json();
+      const configObj = Array.isArray(data.Config)
+        ? convertirFilasConfigAObjeto(data.Config)
+        : data.Config || {};
 
-  // Opción B: Lectura directa de CSV desde Google Sheets público
-  if (
-    tiendaInfo.sheetId &&
-    !tiendaInfo.sheetId.startsWith('REEMPLAZA_AQUI')
-  ) {
-    try {
-      const [
-        filasConfig,
-        portada,
-        secciones,
-        productos,
-        extras,
-        modulosExtra
-      ] = await Promise.all([
-        leerPestanaCsv(tiendaInfo.sheetId, 'Config'),
-        leerPestanaCsv(tiendaInfo.sheetId, 'Portada'),
-        leerPestanaCsv(tiendaInfo.sheetId, 'Secciones'),
-        leerPestanaCsv(tiendaInfo.sheetId, 'Productos'),
-        leerPestanaCsv(tiendaInfo.sheetId, 'Extras'),
-        leerPestanaCsv(tiendaInfo.sheetId, 'ModulosExtra')
-      ]);
+      if (!configObj || Object.keys(configObj).length === 0) {
+        return { estadoError: 404, motivo: 'sheet_vacio' };
+      }
 
       return {
-        config: convertirFilasConfigAObjeto(filasConfig),
-        portada,
-        secciones,
-        productos,
-        extras,
-        modulosExtra
+        config: configObj,
+        portada: data.Portada || [],
+        secciones: data.Secciones || [],
+        productos: data.Productos || [],
+        extras: data.Extras || [],
+        modulosExtra: data.ModulosExtra || []
       };
     } catch (err) {
-      console.warn('No se pudo leer el Sheet público, usando demo:', err);
+      console.warn('Error al cargar tienda desde Apps Script:', err);
+      return { estadoError: 404, motivo: 'sheet_no_disponible' };
     }
   }
 
-  return obtenerDatosDemo();
+  try {
+    const [
+      filasConfig,
+      portada,
+      secciones,
+      productos,
+      extras,
+      modulosExtra
+    ] = await Promise.all([
+      leerPestanaCsv(tiendaInfo.sheetId.trim(), 'Config'),
+      leerPestanaCsv(tiendaInfo.sheetId.trim(), 'Portada'),
+      leerPestanaCsv(tiendaInfo.sheetId.trim(), 'Secciones'),
+      leerPestanaCsv(tiendaInfo.sheetId.trim(), 'Productos'),
+      leerPestanaCsv(tiendaInfo.sheetId.trim(), 'Extras'),
+      leerPestanaCsv(tiendaInfo.sheetId.trim(), 'ModulosExtra')
+    ]);
+
+    const configObj = convertirFilasConfigAObjeto(filasConfig);
+    if (!configObj || Object.keys(configObj).length === 0) {
+      return { estadoError: 404, motivo: 'sheet_vacio' };
+    }
+
+    return {
+      config: configObj,
+      portada,
+      secciones,
+      productos,
+      extras,
+      modulosExtra
+    };
+  } catch (err) {
+    console.warn('No se pudo cargar el Google Sheet de la tienda:', err);
+    return {
+      estadoError: 404,
+      motivo: 'sheet_no_disponible',
+      nombreReferencia: tiendaInfo.nombreReferencia || slug
+    };
+  }
 }
