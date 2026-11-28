@@ -37,7 +37,7 @@ const TIENDAS_WHATSAPPVEND = {
   foodwars: {
     nombreReferencia: 'Food Wars',
     activo: true,
-    sheetId: '1QiNz5KlnUKaZaalRqt3TMs54pAkwtSSUMkQqvjnimI0',
+    sheetId: '1C8rJRFKb2nCoq1RhGHnwwPGKot2tBvNwvkeCEXdmiJ0',
     // Si usas un Apps Script publicado como Web App (doGet) que devuelve JSON
     // con las pestañas { Config, Portada, Secciones, Productos, Extras, ModulosExtra },
     // pon aquí la URL `/exec`. Si queda vacío, se intentará leer CSV público.
