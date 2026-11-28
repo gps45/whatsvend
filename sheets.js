@@ -18,10 +18,11 @@ function esSi(valor, porDefecto = false) {
 
 function aNumero(valor, porDefecto = 0) {
   if (typeof valor === 'number' && !Number.isNaN(valor)) return valor;
-  const limpio = String(valor || '')
+  const normalizado = String(valor || '')
+    .replace(',', '.')
     .replace(/[^0-9.-]/g, '')
     .trim();
-  const num = parseFloat(limpio);
+  const num = parseFloat(normalizado);
   return Number.isNaN(num) ? porDefecto : num;
 }
 
@@ -85,9 +86,13 @@ async function leerPestanaCsv(sheetId, nombrePestana) {
   )}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(nombrePestana)}`;
   const resp = await fetch(url);
   if (!resp.ok) {
-    throw new Error(`No se pudo leer la pestaña ${nombrePestana}`);
+    throw new Error(`No se pudo leer la pestaña ${nombrePestana} (HTTP ${resp.status})`);
   }
   const csv = await resp.text();
+  const inicio = csv.trim().slice(0, 50).toLowerCase();
+  if (inicio.startsWith('<!doctype') || inicio.startsWith('<html')) {
+    throw new Error(`Google devolvió HTML en la pestaña ${nombrePestana}`);
+  }
   return parsearCSV(csv);
 }
 
