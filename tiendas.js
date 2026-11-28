@@ -37,7 +37,17 @@ const TIENDAS_WHATSAPPVEND = {
   foodwars: {
     nombreReferencia: 'Food Wars',
     activo: true,
-    sheetId: '1C8rJRFKb2nCoq1RhGHnwwPGKot2tBvNwvkeCEXdmiJ0',
+    sheetId: '1ZBB7sOqFr9grdM_lzquL4-60xEO1jubjTGvbTNf7XJU',
+    // Si usas un Apps Script publicado como Web App (doGet) que devuelve JSON
+    // con las pestañas { Config, Portada, Secciones, Productos, Extras, ModulosExtra },
+    // pon aquí la URL `/exec`. Si queda vacío, se intentará leer CSV público.
+    appsScriptUrl: ''
+  },
+
+   oceano: {
+    nombreReferencia: 'OCEANO',
+    activo: true,
+    sheetId: '1ZqFr9grdM_lzquL4-60xEO1jubjTGvbTNf7XJU',
     // Si usas un Apps Script publicado como Web App (doGet) que devuelve JSON
     // con las pestañas { Config, Portada, Secciones, Productos, Extras, ModulosExtra },
     // pon aquí la URL `/exec`. Si queda vacío, se intentará leer CSV público.
