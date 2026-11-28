@@ -30,8 +30,7 @@
   const carrito = new GestorCarrito(slug);
 
 
-  const modalBackdrop = document.getElementById('wv-modal-backdrop');
-  const modalDialog = document.getElementById('wv-modal-dialog');
+ 
 
   // Aplica color principal y tipografía base desde Config
   if (datos.config.color_principal) {
