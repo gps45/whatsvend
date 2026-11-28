@@ -29,7 +29,7 @@
   }
   const carrito = new GestorCarrito(slug);
 
-  const appEl = document.getElementById('app');
+
   const modalBackdrop = document.getElementById('wv-modal-backdrop');
   const modalDialog = document.getElementById('wv-modal-dialog');
 
